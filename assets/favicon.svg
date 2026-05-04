@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Digitalbuff mark">
+  <rect width="64" height="64" fill="#0a0a0b" rx="8"/>
+  <text x="32" y="44"
+        text-anchor="middle"
+        font-family="'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+        font-size="36" font-weight="700" letter-spacing="-1">
+    <tspan fill="#00d9a3">{</tspan><tspan fill="#f5f3ee">d</tspan><tspan fill="#f5f3ee">b</tspan><tspan fill="#00d9a3">}</tspan>
+  </text>
+</svg>

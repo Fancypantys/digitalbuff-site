@@ -1,0 +1,27 @@
+/*
+ * Digitalbuff — Brand Tokens
+ * Drop into your global stylesheet, or re-export as Tailwind theme values.
+ */
+
+:root {
+  /* Core palette */
+  --db-bg:         #0a0a0b;  /* near-black background */
+  --db-surface:    #141416;  /* card/panel surface */
+  --db-border:     #262626;  /* subtle dividers */
+  --db-ink:        #f5f3ee;  /* primary text (off-white) */
+  --db-muted:      #8a8680;  /* secondary text */
+  --db-accent:     #00d9a3;  /* mint — brackets, cursor, highlights */
+  --db-accent-dim: #00a57b;  /* hover / pressed state for accent */
+
+  /* Type */
+  --db-font-mono:   'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --db-font-body:   ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Example grid background used on the primary mark */
+.db-grid-bg {
+  background:
+    linear-gradient(var(--db-border) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, var(--db-border) 1px, transparent 1px) 0 0 / 28px 28px,
+    var(--db-bg);
+}

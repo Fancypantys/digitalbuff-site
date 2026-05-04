@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Digitalbuff — Logo Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  body { background: #0a0a0b; color: #f5f3ee; font-family: -apple-system, sans-serif; padding: 60px; max-width: 900px; margin: 0 auto; }
+  h2 { color: #8a8680; font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; margin: 60px 0 16px; }
+  h2:first-of-type { margin-top: 0; }
+  .panel { background: #141416; border: 1px solid #262626; border-radius: 12px; padding: 40px; display: flex; align-items: center; gap: 24px; }
+  .panel-light { background: #f5f3ee; }
+  .panel-mint { background: #00d9a3; }
+  .favicon-row { display: flex; gap: 24px; align-items: center; }
+  .label { font-size: 12px; color: #8a8680; }
+</style>
+</head>
+<body>
+<h2>Wordmark — på sort baggrund</h2>
+<div class="panel">
+  <object type="image/svg+xml" data="../logo.svg" style="height: 80px;"></object>
+</div>
+
+<h2>Wordmark — animeret (cursor blinker)</h2>
+<div class="panel">
+  <object type="image/svg+xml" data="../logo-animated.svg" style="height: 80px;"></object>
+</div>
+
+<h2>Favicon (browser tab / app icon)</h2>
+<div class="panel favicon-row">
+  <object type="image/svg+xml" data="../favicon.svg" style="height: 64px; width: 64px;"></object>
+  <object type="image/svg+xml" data="../favicon.svg" style="height: 32px; width: 32px;"></object>
+  <object type="image/svg+xml" data="../favicon.svg" style="height: 16px; width: 16px;"></object>
+  <span class="label">64px · 32px · 16px</span>
+</div>
+
+<h2>Hvis du vil se det på lys baggrund</h2>
+<div class="panel panel-light">
+  <object type="image/svg+xml" data="../logo.svg" style="height: 80px;"></object>
+</div>
+</body>
+</html>

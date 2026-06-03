@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digitalbuff — AI-træning til danske virksomheder</title>
+<meta name="description" content="AI-træning der virker. Du skal ikke vide alt om AI — du skal bare komme i gang. Tre niveauer, hos jer, skræddersyet til jeres branche.">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:        #0a0a0b;
+    --surface:   #141416;
+    --surface-2: #1c1c1f;
+    --border:    #262626;
+    --ink:       #f5f3ee;
+    --ink-soft:  #d6d3cc;
+    --muted:     #8a8680;
+    --accent:    #00d9a3;
+    --accent-dim:#00a57b;
+    --accent-ghost: rgba(0,217,163,0.10);
+    --warn:      #ffb84d;
+    --shadow-md: 0 12px 30px rgba(0,0,0,0.35);
+    --shadow-lg: 0 30px 80px rgba(0,0,0,0.5);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 999;
+    background: rgba(10,10,11,0.85); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-wrap { max-width: 1180px; margin: 0 auto; padding: 0 2rem; height: 68px; display: flex; align-items: center; justify-content: space-between; }
+  .logo-svg { height: 28px; width: auto; }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a { color: var(--ink-soft); font-size: 0.9rem; font-weight: 500; transition: color .15s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-btn { background: var(--accent); color: var(--bg) !important; padding: 0.55rem 1.4rem; border-radius: 6px; font-weight: 700 !important; transition: all .15s; }
+  .nav-btn:hover { background: var(--ink) !important; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 0.4rem; background: none; border: none; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .3s; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none; position: fixed; top: 68px; left: 0; right: 0; z-index: 998;
+    background: rgba(10,10,11,0.98); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 2rem 1.8rem; flex-direction: column; gap: 0.2rem;
+    transform: translateY(-8px); opacity: 0; transition: opacity .25s, transform .25s;
+  }
+  .mobile-menu.open { opacity: 1; transform: translateY(0); }
+  .mobile-menu a { color: var(--ink-soft); font-size: 1.05rem; font-weight: 500; padding: 0.8rem 0; border-bottom: 1px solid var(--border); display: block; }
+  .mobile-menu a:last-child { border-bottom: none; margin-top: 0.6rem; }
+  .mobile-menu .nav-btn { text-align: center; border-radius: 8px; padding: 0.9rem; color: var(--bg) !important; font-size: 1rem; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .mobile-menu { display: flex; }
+  }
+
+  /* === HERO === */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 7rem 2rem 5rem; position: relative; overflow: hidden; text-align: center;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,217,163,0.10), transparent 70%), var(--bg);
+  }
+  .grid-bg {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(var(--border) 1px, transparent 1px) 0 0 / 56px 56px,
+      linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0 / 56px 56px;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 30%, black 30%, transparent 70%);
+    opacity: 0.4; pointer-events: none;
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 820px; }
+  .hero-pill { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent-ghost); border: 1px solid rgba(0,217,163,0.35); color: var(--accent); padding: 0.4rem 1rem; border-radius: 100px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 1.8rem; font-family: 'JetBrains Mono', monospace; }
+  .hero-pill .pulse { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2.4s infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4.4rem); font-weight: 800; line-height: 1.05;
+    letter-spacing: -0.035em; margin-bottom: 1.5rem; color: var(--ink);
+  }
+  .hero h1 mark { background: none; color: var(--accent); }
+  .hero p {
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem); color: var(--ink-soft);
+    max-width: 600px; margin: 0 auto 2.5rem;
+  }
+  .hero-cta { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.95rem 1.7rem; border-radius: 100px;
+    font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all .15s;
+    border: 1px solid transparent; font-family: inherit;
+  }
+  .btn-mint { background: var(--accent); color: var(--bg); }
+  .btn-mint:hover { background: var(--ink); transform: translateY(-1px); box-shadow: 0 10px 30px rgba(0,217,163,0.25); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--surface); border-color: var(--ink); }
+  .btn svg { width: 14px; height: 14px; }
+
+  /* === SECTION BASE === */
+  section.block { padding: 6rem 2rem; position: relative; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  .section-label { font-family: 'JetBrains Mono', monospace; text-transform: uppercase; font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px; color: var(--accent); margin-bottom: 1rem; }
+  .section-title { font-size: clamp(1.8rem, 3.6vw, 2.8rem); font-weight: 800; color: var(--ink); margin-bottom: 1rem; letter-spacing: -0.025em; line-height: 1.15; }
+  .section-sub { font-size: 1.05rem; color: var(--muted); max-width: 620px; }
+  .section-head { text-align: center; margin-bottom: 4rem; }
+  .section-head .section-sub { margin: 0 auto; }
+
+  /* === LEAD MAGNET CARD (PDF) === */
+  .lead-magnet { padding: 4rem 2rem; }
+  .lead-card {
+    max-width: 760px; margin: 0 auto;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 2.5rem; box-shadow: var(--shadow-md);
+    display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+  }
+  @media (min-width: 720px) {
+    .lead-card { grid-template-columns: 1fr auto; align-items: center; }
+  }
+  .lead-card .lead-badge { display: inline-block; background: var(--accent-ghost); color: var(--accent); padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.8rem; font-family: 'JetBrains Mono', monospace; }
+  .lead-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.015em; }
+  .lead-card p { color: var(--muted); font-size: 0.95rem; }
+  .lead-form { display: flex; gap: 8px; flex-wrap: wrap; min-width: 280px; }
+  .lead-form input[type=email] {
+    flex: 1; min-width: 200px; background: var(--bg); border: 1px solid var(--border);
+    color: var(--ink); padding: 0.85rem 1.2rem; border-radius: 100px; font-size: 0.95rem;
+    font-family: inherit; transition: border-color .15s;
+  }
+  .lead-form input[type=email]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ghost); }
+  .lead-form .btn { padding: 0.85rem 1.4rem; }
+  .lead-success { color: var(--accent); font-size: 0.9rem; margin-top: 0.6rem; display: none; font-family: 'JetBrains Mono', monospace; }
+
+  /* === PROBLEMS === */
+  .problems { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+  .problem-item {
+    background: var(--surface); border-radius: 14px; padding: 1.8rem;
+    border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    transition: transform .15s, border-color .15s;
+  }
+  .problem-item:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .problem-item .pi-icon { font-size: 1.6rem; margin-bottom: 0.8rem; }
+  .problem-item h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--ink); }
+  .problem-item p { font-size: 0.92rem; color: var(--muted); }
+
+  /* === QUIZ === */
+  .quiz-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .quiz-card { max-width: 760px; margin: 0 auto; background: var(--surface-2); border-radius: 20px; padding: 2.5rem; border: 1px solid var(--border); }
+  .quiz-progress-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--muted); }
+  .quiz-progress { flex: 1; height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .quiz-progress-fill { height: 100%; background: var(--accent); width: 25%; transition: width .3s; }
+  .quiz-step { display: none; }
+  .quiz-step.active { display: block; }
+  .quiz-question { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.015em; }
+  .quiz-helper { color: var(--muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+  .quiz-option {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1rem 1.2rem; cursor: pointer; transition: all .12s;
+    display: flex; align-items: flex-start; gap: 0.8rem;
+  }
+  .quiz-option:hover { border-color: var(--accent); }
+  .quiz-option.selected { border-color: var(--accent); background: var(--accent-ghost); }
+  .quiz-option .qo-icon { font-size: 1.4rem; }
+  .quiz-option .qo-text strong { display: block; color: var(--ink); margin-bottom: 0.15rem; font-weight: 600; }
+  .quiz-option .qo-text span { color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
+  .quiz-actions { display: flex; gap: 0.75rem; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+  .quiz-back { background: none; border: none; color: var(--muted); cursor: pointer; padding: 0.7rem 1.2rem; font-family: inherit; font-size: 0.9rem; }
+  .quiz-back:hover { color: var(--ink); }
+  .quiz-next { background: var(--surface); color: var(--muted); border: 1px solid var(--border); padding: 0.85rem 1.5rem; border-radius: 100px; font-weight: 600; cursor: not-allowed; transition: all .15s; font-family: inherit; font-size: 0.9rem; }
+  .quiz-next.ready { background: var(--accent); color: var(--bg); border-color: var(--accent); cursor: pointer; }
+  .quiz-next.ready:hover { background: var(--ink); border-color: var(--ink); }
+
+  /* Quiz result */
+  #quizResult { display: none; }
+  #quizResult.active { display: block; }
+  .result-badge { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+  .result-badge-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+  .result-title { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.2rem; }
+  .result-name { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.015em; }
+  .result-card-body { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem; margin-bottom: 1.5rem; }
+  .result-card-body p { color: var(--ink-soft); margin-bottom: 1rem; }
+  .result-includes { list-style: none; }
+  .result-includes li { padding-left: 1.6rem; position: relative; color: var(--ink-soft); margin-bottom: 0.4rem; font-size: 0.95rem; }
+  .result-includes li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .result-price { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 1.5rem; padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .price-from { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+  .price-num { font-size: 2rem; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+  .price-num::after { content: ' kr'; font-size: 1rem; color: var(--muted); font-weight: 500; margin-left: 0.2rem; }
+  .price-suffix { color: var(--muted); font-size: 0.85rem; }
+  .result-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+  /* === COURSES === */
+  .courses { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1rem; }
+  @media (min-width: 900px) { .courses { grid-template-columns: repeat(3, 1fr); } }
+  .course {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+    padding: 2rem; position: relative; display: flex; flex-direction: column;
+  }
+  .course.popular { border-color: var(--accent); box-shadow: 0 10px 40px rgba(0,217,163,0.12); }
+  .course .badge {
+    position: absolute; top: -12px; left: 1.5rem;
+    background: var(--accent); color: var(--bg); padding: 4px 12px;
+    border-radius: 100px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+  }
+  .course-num { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .course-name { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+  .course-meta { color: var(--muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; margin-bottom: 1.5rem; }
+  .course-section { margin-bottom: 1.4rem; }
+  .course-section h5 { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.6rem; }
+  .course-list { list-style: none; }
+  .course-list li { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.6; padding-left: 1.4rem; position: relative; margin-bottom: 0.3rem; }
+  .course-list li::before { content: '·'; position: absolute; left: 0.4rem; color: var(--accent); font-weight: 800; }
+  .course-includes li::before { content: '+'; }
+  .course-price { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.2rem; margin-top: auto; padding-top: 1.2rem; border-top: 1px solid var(--border); }
+  .course-price-suffix { color: var(--muted); font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; margin-bottom: 1rem; }
+  .course .btn { width: 100%; justify-content: center; }
+
+  /* === COMPARISON TABLE === */
+  .compare-wrap { overflow-x: auto; margin-top: 1rem; }
+  .compare {
+    width: 100%; border-collapse: collapse; min-width: 700px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  }
+  .compare th, .compare td { padding: 0.9rem 1.2rem; text-align: left; border-bottom: 1px solid var(--border); }
+  .compare th { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); background: var(--surface-2); }
+  .compare td:not(:first-child), .compare th:not(:first-child) { text-align: center; }
+  .compare td.col-name { font-size: 0.92rem; color: var(--ink-soft); }
+  .compare td.cell-y { color: var(--accent); font-weight: 700; }
+  .compare td.cell-n { color: var(--muted); }
+  .compare tr.price-row td { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ink); background: var(--surface-2); border-bottom: none; }
+
+  /* === PROCESS === */
+  .process { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1rem; }
+  @media (min-width: 700px) { .process { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .process { grid-template-columns: repeat(4, 1fr); } }
+  .process-step { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem; }
+  .process-num { width: 32px; height: 32px; border-radius: 8px; background: var(--accent-ghost); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; margin-bottom: 1rem; }
+  .process-step h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .process-step p { color: var(--muted); font-size: 0.9rem; }
+
+  /* === JONAS === */
+  .jonas-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .jonas-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; max-width: 900px; margin: 0 auto; }
+  @media (min-width: 800px) { .jonas-grid { grid-template-columns: 200px 1fr; gap: 3rem; } }
+  .jonas-avatar {
+    width: 200px; height: 200px; border-radius: 24px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 4rem; font-weight: 800; color: var(--bg);
+    letter-spacing: -2px; box-shadow: var(--shadow-lg);
+  }
+  .jonas-text h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 0.2rem; }
+  .jonas-text .role { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .jonas-text p { color: var(--ink-soft); margin-bottom: 1rem; }
+  .jonas-quote {
+    border-left: 3px solid var(--accent); padding: 0.8rem 0 0.8rem 1.2rem;
+    margin: 1.5rem 0; color: var(--ink); font-style: italic; font-size: 1.05rem;
+  }
+
+  /* === BOOKING / CONTACT === */
+  .contact-card {
+    max-width: 720px; margin: 0 auto; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem;
+  }
+  .contact-form { display: grid; gap: 1rem; }
+  .contact-form label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.4rem; }
+  .contact-form input, .contact-form select, .contact-form textarea {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--ink); padding: 0.85rem 1.2rem; border-radius: 12px;
+    font-family: inherit; font-size: 0.95rem; transition: border-color .15s;
+  }
+  .contact-form textarea { min-height: 100px; resize: vertical; }
+  .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ghost);
+  }
+  .contact-row { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  @media (min-width: 600px) { .contact-row { grid-template-columns: 1fr 1fr; } }
+  .form-success {
+    display: none; text-align: center; padding: 3rem 1rem;
+  }
+  .form-success.active { display: block; }
+  .form-success-icon { width: 60px; height: 60px; border-radius: 50%; background: var(--accent-ghost); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; }
+  .form-note { text-align: center; color: var(--muted); font-size: 0.82rem; margin-top: 1rem; font-family: 'JetBrains Mono', monospace; }
+
+  /* === FOOTER === */
+  footer { padding: 3rem 2rem; border-top: 1px solid var(--border); }
+  .footer-wrap { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--muted); }
+  .footer-wrap a { color: var(--muted); margin-left: 1.2rem; transition: color .15s; }
+  .footer-wrap a:hover { color: var(--ink); }
+
+  /* === AI BADGE === */
+  #aiBadge {
+    position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    box-shadow: 0 4px 20px rgba(0,217,163,0.25), 0 0 0 0 rgba(0,217,163,0.4);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: transform .2s;
+    animation: badgePulse 2.5s infinite;
+    color: var(--accent);
+  }
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(0,217,163,0.25), 0 0 0 0 rgba(0,217,163,0.4); }
+    50% { box-shadow: 0 4px 20px rgba(0,217,163,0.35), 0 0 0 8px rgba(0,217,163,0); }
+  }
+  #aiBadge:hover { transform: scale(1.08); }
+  #aiBadge svg { width: 22px; height: 22px; }
+  #aiPanel {
+    position: fixed; bottom: 5.2rem; right: 1.5rem; z-index: 9998;
+    width: 340px; max-width: calc(100vw - 3rem); background: var(--bg);
+    border: 1px solid var(--accent); border-radius: 14px; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    opacity: 0; transform: translateY(12px) scale(0.97);
+    pointer-events: none; transition: opacity .25s, transform .25s;
+  }
+  #aiPanel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+  .panel-header { background: var(--surface); padding: 0.7rem 1rem; display: flex; align-items: center; gap: 0.6rem; border-bottom: 1px solid var(--border); }
+  .panel-dots { display: flex; gap: 0.35rem; }
+  .panel-dots span { width: 10px; height: 10px; border-radius: 50%; }
+  .panel-dots .d1 { background: #ff5f56; }
+  .panel-dots .d2 { background: #ffbd2e; }
+  .panel-dots .d3 { background: #27c93f; }
+  .panel-title { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); }
+  .panel-body { padding: 1rem 1.1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.7; min-height: 80px; max-height: 280px; overflow-y: auto; }
+  .tline-cmd { color: var(--accent); }
+  .tline-out { color: var(--muted); }
+  .tline-ok { color: #56d364; }
+  .tline-done { color: var(--accent); font-weight: 700; }
+
+  /* utilities */
+  .alt-bg { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- ======= NAV ======= -->
+<nav>
+  <div class="nav-wrap">
+    <a href="#top" aria-label="Digitalbuff forside">
+      <img src="assets/logo.svg" alt="Digitalbuff" class="logo-svg">
+    </a>
+    <div class="nav-links">
+      <a href="#problems">Fælder</a>
+      <a href="#quiz">Niveau</a>
+      <a href="#courses">Kurser</a>
+      <a href="#process">Forløb</a>
+      <a href="#jonas">Om Jonas</a>
+      <a href="#contact" class="nav-btn">Book en snak</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#problems">Fælder</a>
+  <a href="#quiz">Niveau</a>
+  <a href="#courses">Kurser</a>
+  <a href="#process">Forløb</a>
+  <a href="#jonas">Om Jonas</a>
+  <a href="#contact" class="nav-btn">Book en snak</a>
+</div>
+
+<!-- ======= HERO ======= -->
+<section class="hero" id="top">
+  <div class="grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-pill"><span class="pulse"></span> AI-træning til danske virksomheder</div>
+    <h1>Klar til at bruge AI <mark>rigtigt</mark> i din virksomhed?</h1>
+    <p>Du skal ikke vide alt om AI. Du skal bare komme i gang. Når du først er i gang, kommer idéerne af sig selv.</p>
+    <div class="hero-cta">
+      <a href="#quiz" class="btn btn-mint">
+        Find dit niveau
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#courses" class="btn btn-ghost">Se kurserne</a>
+    </div>
+  </div>
+</section>
+
+<!-- ======= LEAD MAGNET ======= -->
+<section class="lead-magnet" id="pdf">
+  <div class="lead-card">
+    <div>
+      <span class="lead-badge">Gratis · 13 sider</span>
+      <h3>10 AI-vindere for små danske virksomheder</h3>
+      <p>10 AI-ting du kan tage fat på i næste uge. Med værktøj, pris og tidsforbrug på hver. Ingen spam.</p>
+    </div>
+    <form id="emailForm" class="lead-form">
+      <input type="email" name="email" placeholder="din@mail.dk" required aria-label="Din email">
+      <button type="submit" class="btn btn-mint">Send PDF'en</button>
+    </form>
+    <div class="lead-success" id="leadSuccess" style="grid-column: 1 / -1;">✓ Tak — vi sender PDF'en til din mail.</div>
+  </div>
+</section>
+
+<!-- ======= PROBLEMS ======= -->
+<section class="block alt-bg" id="problems">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Kender du det her?</div>
+      <h2 class="section-title">De fire klassiske AI-fælder</h2>
+      <p class="section-sub">Jeg ser dem i næsten alle de virksomheder jeg møder. Genkender du én af dem?</p>
+    </div>
+    <div class="problems">
+      <div class="problem-item">
+        <div class="pi-icon">🔁</div>
+        <h4>"Vi har prøvet ChatGPT…"</h4>
+        <p>… én gang, for 6 måneder siden. Det var lidt forvirrende, og så faldt det i glemmebogen.</p>
+      </div>
+      <div class="problem-item">
+        <div class="pi-icon">⏳</div>
+        <h4>Timer spildt på rutineopgaver</h4>
+        <p>Rapporter, mails, research, oversættelser — opgaver der kan automatiseres, men tager halve dage af dit team.</p>
+      </div>
+      <div class="problem-item">
+        <div class="pi-icon">😰</div>
+        <h4>"Hvad må vi overhovedet bruge det til?"</h4>
+        <p>Usikkerhed om GDPR, datasikkerhed og etik. Ingen har sat klare retningslinjer op for virksomheden.</p>
+      </div>
+      <div class="problem-item">
+        <div class="pi-icon">📉</div>
+        <h4>Konkurrenterne rykker hurtigere</h4>
+        <p>Du mærker det. Dem der bruger AI rigtigt leverer mere på kortere tid. Ikke fordi de er klogere — de har bare et bedre sæt værktøjer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= QUIZ ======= -->
+<section class="block quiz-section" id="quiz">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Find dit udgangspunkt</div>
+      <h2 class="section-title">Hvilket niveau er din virksomhed på?</h2>
+      <p class="section-sub">Svar på 4 spørgsmål — så finder vi det kursus der passer præcist til jer.</p>
+    </div>
+
+    <div class="quiz-card">
+      <div class="quiz-progress-row">
+        <span id="progressText">Spørgsmål 1 af 4</span>
+        <div class="quiz-progress"><div class="quiz-progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <!-- Step 0 -->
+      <div class="quiz-step active" data-step="0">
+        <div class="quiz-question">Hvad er jeres nuværende erfaring med AI?</div>
+        <div class="quiz-helper">Vær ærlig — der er ikke noget forkert svar.</div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-value="0"><span class="qo-icon">🌱</span><div class="qo-text"><strong>Vi er næsten uerfarne</strong><span>Vi har hørt om det, men bruger det ikke i hverdagen endnu.</span></div></div>
+          <div class="quiz-option" data-value="1"><span class="qo-icon">🔍</span><div class="qo-text"><strong>Vi har prøvet det lidt</strong><span>Nogle i teamet bruger ChatGPT eller lignende af og til, men ikke systematisk.</span></div></div>
+          <div class="quiz-option" data-value="2"><span class="qo-icon">⚙️</span><div class="qo-text"><strong>Vi bruger AI regelmæssigt</strong><span>AI er en del af hverdagen, men vi mangler struktur og fælles tilgang.</span></div></div>
+          <div class="quiz-option" data-value="3"><span class="qo-icon">🚀</span><div class="qo-text"><strong>Vi er klar til næste niveau</strong><span>Vi bruger AI aktivt og vil integrere det dybere i vores processer.</span></div></div>
+        </div>
+        <div class="quiz-actions"><span></span><button class="quiz-next" id="next-0" onclick="goNext(0)">Næste →</button></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="quiz-step" data-step="1">
+        <div class="quiz-question">Hvad er jeres vigtigste mål med AI-træning?</div>
+        <div class="quiz-helper">Vælg det der passer bedst til hvor I er nu.</div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-value="0"><span class="qo-icon">💡</span><div class="qo-text"><strong>Forstå mulighederne</strong><span>Vi vil vide hvad AI overhovedet kan gøre for vores branche.</span></div></div>
+          <div class="quiz-option" data-value="1"><span class="qo-icon">⏱️</span><div class="qo-text"><strong>Spare tid på daglige opgaver</strong><span>Vi vil sætte strøm til tilbagevendende opgaver og frigøre timer i ugen.</span></div></div>
+          <div class="quiz-option" data-value="2"><span class="qo-icon">🔗</span><div class="qo-text"><strong>Bygge systematiske AI-workflows</strong><span>Vi vil have AI integreret i vores processer, ikke bare som tilfældigt redskab.</span></div></div>
+          <div class="quiz-option" data-value="3"><span class="qo-icon">🏆</span><div class="qo-text"><strong>En fuld AI-transformation</strong><span>Vi vil have en strategi, egne workflows og en AI-roadmap for hele virksomheden.</span></div></div>
+        </div>
+        <div class="quiz-actions"><button class="quiz-back" onclick="goBack(1)">← Tilbage</button><button class="quiz-next" id="next-1" onclick="goNext(1)">Næste →</button></div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="quiz-step" data-step="2">
+        <div class="quiz-question">Hvor mange fra teamet skal undervises?</div>
+        <div class="quiz-helper">Det påvirker hvilket format der giver mest mening.</div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-value="0"><span class="qo-icon">👤</span><div class="qo-text"><strong>1–5 personer</strong><span>En lille gruppe eller enkeltpersoner der vil kickstarte.</span></div></div>
+          <div class="quiz-option" data-value="1"><span class="qo-icon">👥</span><div class="qo-text"><strong>5–15 personer</strong><span>Et team eller en afdeling der vil lære AI sammen.</span></div></div>
+          <div class="quiz-option" data-value="2"><span class="qo-icon">🏢</span><div class="qo-text"><strong>15–30 personer</strong><span>En større afdeling eller tværgående team.</span></div></div>
+          <div class="quiz-option" data-value="3"><span class="qo-icon">🌐</span><div class="qo-text"><strong>30+ personer</strong><span>Hele virksomheden — vi vil have alle med ombord.</span></div></div>
+        </div>
+        <div class="quiz-actions"><button class="quiz-back" onclick="goBack(2)">← Tilbage</button><button class="quiz-next" id="next-2" onclick="goNext(2)">Næste →</button></div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="quiz-step" data-step="3">
+        <div class="quiz-question">Hvad beskriver bedst jeres situation?</div>
+        <div class="quiz-helper">Vælg det der minder mest om virkeligheden hos jer.</div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-value="0"><span class="qo-icon">🤔</span><div class="qo-text"><strong>Vi er nysgerrige men usikre</strong><span>Vi vil gerne, men ved ikke hvor vi skal starte.</span></div></div>
+          <div class="quiz-option" data-value="1"><span class="qo-icon">📋</span><div class="qo-text"><strong>Vi bruger AI sporadisk</strong><span>Vi har ingen fælles tilgang. Resultater er uforudsigelige.</span></div></div>
+          <div class="quiz-option" data-value="2"><span class="qo-icon">🎯</span><div class="qo-text"><strong>Vi vil gøre AI til en fast del</strong><span>Vi mangler struktur, kompetencer og en klar politik.</span></div></div>
+          <div class="quiz-option" data-value="3"><span class="qo-icon">⚡</span><div class="qo-text"><strong>Vi er klar til at gå all-in</strong><span>Vi er parate til en grundig transformation med egne workflows.</span></div></div>
+        </div>
+        <div class="quiz-actions"><button class="quiz-back" onclick="goBack(3)">← Tilbage</button><button class="quiz-next" id="next-3" onclick="showResult()">Se mit resultat →</button></div>
+      </div>
+
+      <!-- Result -->
+      <div class="quiz-step" id="quizResult">
+        <div class="result-badge" id="resultBadge"></div>
+        <div class="result-card-body" id="resultCard"></div>
+        <div class="result-price" id="resultPrice"></div>
+        <div class="result-actions">
+          <a href="#contact" class="btn btn-mint" id="resultCTA">Book en snak →</a>
+          <button class="quiz-back" onclick="retakeQuiz()">Tag testen igen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= COURSES ======= -->
+<section class="block" id="courses">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Vores kurser</div>
+      <h2 class="section-title">Tre niveauer. Ét mål.</h2>
+      <p class="section-sub">Alle kurser leveres hos jer — skræddersyet til jeres branche og hverdag.</p>
+    </div>
+    <div class="courses">
+
+      <div class="course">
+        <div class="course-num">01 · Halvdagskursus</div>
+        <h3 class="course-name">AI Kickstart</h3>
+        <div class="course-meta">4 timer · 5–15 deltagere · hos jer</div>
+
+        <div class="course-section">
+          <h5>Passer hvis…</h5>
+          <ul class="course-list">
+            <li>I kender AI, men har ikke taget det første seriøse skridt</li>
+            <li>Kun få i teamet bruger AI til dagligt</li>
+            <li>I vil have et overblik og hurtige gevinster</li>
+            <li>I har max en halv dag til rådighed</li>
+          </ul>
+        </div>
+
+        <div class="course-section">
+          <h5>Hvad I lærer</h5>
+          <ul class="course-list">
+            <li>AI-landskabet i 2026 — hvad er vigtigt for jer</li>
+            <li>Prompt-teknik fra bunden</li>
+            <li>Live-øvelser med jeres egne opgaver</li>
+            <li>Branchespecifikke use cases</li>
+          </ul>
+        </div>
+
+        <div class="course-section">
+          <h5>I går hjem med</h5>
+          <ul class="course-list course-includes">
+            <li>Prompt-cheat sheet (PDF)</li>
+            <li>AI-værktøjsoversigt</li>
+            <li>3 ting I kan gøre mandag morgen</li>
+            <li>30 dages adgang til ressourcebibliotek</li>
+          </ul>
+        </div>
+
+        <div class="course-price">5.000</div>
+        <div class="course-price-suffix">DKK · eks. moms</div>
+        <a href="#contact" class="btn btn-ghost">Book AI Kickstart</a>
+      </div>
+
+      <div class="course popular">
+        <div class="badge">Mest populær</div>
+        <div class="course-num">02 · Heldagskursus</div>
+        <h3 class="course-name">AI Deep Dive</h3>
+        <div class="course-meta">7 timer · 5–15 deltagere · inkl. frokost</div>
+
+        <div class="course-section">
+          <h5>Passer hvis…</h5>
+          <ul class="course-list">
+            <li>I bruger AI ad hoc, men vil gøre det systematisk</li>
+            <li>I vil automatisere konkrete arbejdsprocesser</li>
+            <li>I er klar til en hel dag i dybden</li>
+            <li>I vil have AI til at fungere på tværs af teamet</li>
+          </ul>
+        </div>
+
+        <div class="course-section">
+          <h5>Hvad I lærer</h5>
+          <ul class="course-list">
+            <li>CRAFT-metoden til prompt engineering</li>
+            <li>Indhold og kommunikation med AI</li>
+            <li>Automatisering med Zapier og Make</li>
+            <li>AI til dataanalyse — uden teknisk baggrund</li>
+            <li>Workshop: jeres 3 største tidsspildere</li>
+          </ul>
+        </div>
+
+        <div class="course-section">
+          <h5>I går hjem med</h5>
+          <ul class="course-list course-includes">
+            <li>Alt fra Kickstart</li>
+            <li>Avanceret prompt-playbook</li>
+            <li>Mindst én fungerende automatisering</li>
+            <li>30-dages implementeringsplan</li>
+            <li>15-min opfølgning med Jonas</li>
+          </ul>
+        </div>
+
+        <div class="course-price">9.500</div>
+        <div class="course-price-suffix">DKK · eks. moms</div>
+        <a href="#contact" class="btn btn-mint">Book AI Deep Dive</a>
+      </div>
+
+      <div class="course">
+        <div class="course-num">03 · 2-dages forløb</div>
+        <h3 class="course-name">AI Transformation</h3>
+        <div class="course-meta">2 dage · 5–20 deltagere · inkl. AI-audit</div>
+
+        <div class="course-section">
+          <h5>Passer hvis…</h5>
+          <ul class="course-list">
+            <li>I vil gøre AI til en strategisk del af forretningen</li>
+            <li>I vil have egne workflows og automatiseringer</li>
+            <li>I vil have en klar AI-politik og sikkerhedsrammer</li>
+            <li>I er seriøse — og klar til to dage</li>
+          </ul>
+        </div>
+
+        <div class="course-section">
+          <h5>Hvad I lærer</h5>
+          <ul class="course-list">
+            <li>Dag 1: Komplet Deep Dive + audit af jeres processer</li>
+            <li>Dag 2: Byg AI-løsninger til jeres top 3–5 processer</li>
+            <li>Change management for hele organisationen</li>
+            <li>AI-sikkerhed: data, GDPR, hvad I må bruge AI til</li>
+            <li>6-måneders plan: hvad sker der efter kurset</li>
+          </ul>
+        </div>
+
+        <div class="course-section">
+          <h5>I går hjem med</h5>
+          <ul class="course-list course-includes">
+            <li>Alt fra Deep Dive</li>
+            <li>Komplet AI-audit af organisationen</li>
+            <li>3–5 fungerende AI-workflows</li>
+            <li>AI-politik skabelon</li>
+            <li>6-måneders AI-roadmap med KPI'er</li>
+            <li>30-min opfølgning med Jonas</li>
+          </ul>
+        </div>
+
+        <div class="course-price">15.000</div>
+        <div class="course-price-suffix">DKK · eks. moms</div>
+        <a href="#contact" class="btn btn-ghost">Book AI Transformation</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======= COMPARISON ======= -->
+<section class="block alt-bg">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Sammenligning</div>
+      <h2 class="section-title">Hvad er forskellen?</h2>
+      <p class="section-sub">Hurtig oversigt over hvad der er inkluderet på hvert niveau.</p>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr><th>Indhold</th><th>Kickstart</th><th>Deep Dive</th><th>Transformation</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="col-name">AI-overblik &amp; prompt-teknik</td><td class="cell-y">✓</td><td class="cell-y">✓</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">Branchetilpassede øvelser</td><td class="cell-y">✓</td><td class="cell-y">✓</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">Prompt-cheat sheet (PDF)</td><td class="cell-y">✓</td><td class="cell-y">✓</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">Adgang til ressourcebibliotek</td><td>30 dage</td><td>60 dage</td><td>90 dage</td></tr>
+          <tr><td class="col-name">Avanceret prompt engineering (CRAFT)</td><td class="cell-n">–</td><td class="cell-y">✓</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">Workflow-automatisering (Zapier/Make)</td><td class="cell-n">–</td><td class="cell-y">✓</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">AI til dataanalyse</td><td class="cell-n">–</td><td class="cell-y">✓</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">30-dages implementeringsplan</td><td class="cell-n">–</td><td class="cell-y">✓</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">Opfølgning med Jonas</td><td class="cell-n">–</td><td>15 min</td><td>30 min</td></tr>
+          <tr><td class="col-name">AI-audit af jeres processer</td><td class="cell-n">–</td><td class="cell-n">–</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">Bygger AI-workflows på dagen</td><td class="cell-n">–</td><td class="cell-n">–</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">AI-politik skabelon</td><td class="cell-n">–</td><td class="cell-n">–</td><td class="cell-y">✓</td></tr>
+          <tr><td class="col-name">6-måneders AI-roadmap</td><td class="cell-n">–</td><td class="cell-n">–</td><td class="cell-y">✓</td></tr>
+          <tr class="price-row"><td>Pris (eks. moms)</td><td>5.000 kr</td><td>9.500 kr</td><td>15.000 kr</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PROCESS ======= -->
+<section class="block" id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Sådan fungerer det</div>
+      <h2 class="section-title">Fra første kontakt til konkrete resultater</h2>
+      <p class="section-sub">Ingen lange salgsprocesser. De fleste virksomheder er i gang inden for 2 uger.</p>
+    </div>
+    <div class="process">
+      <div class="process-step"><div class="process-num">01</div><h4>Gratis snak (15 min)</h4><p>Vi taler om hvor I er nu, hvad I vil opnå, og hvilket niveau der giver mening.</p></div>
+      <div class="process-step"><div class="process-num">02</div><h4>Tilbud &amp; forberedelse</h4><p>I får et klart tilbud. Jeg researcher jeres branche og tilpasser kurset til jeres hverdag.</p></div>
+      <div class="process-step"><div class="process-num">03</div><h4>Kurset — hos jer</h4><p>Hands-on undervisning der starter hvor I er, og tager jer til næste niveau. 100% praktisk.</p></div>
+      <div class="process-step"><div class="process-num">04</div><h4>Resultater fra dag 1</h4><p>Teamet bruger AI aktivt med det samme. Deep Dive og Transformation inkluderer opfølgning.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= JONAS ======= -->
+<section class="block jonas-section" id="jonas">
+  <div class="wrap">
+    <div class="jonas-grid">
+      <div class="jonas-avatar">JS</div>
+      <div class="jonas-text">
+        <div class="section-label">Bag firmaet</div>
+        <h3>Jonas Stovring</h3>
+        <div class="role">Grundlægger, Digitalbuff · Til daglig CEO i Spudo</div>
+        <p>Jeg har altid været tech-interesseret. Jeg har kunnet kode meget, meget lidt — havde en okay forståelse, og en rigtig god forståelse for at forklare det til andre.</p>
+        <p>Så kom AI'en. Og lige pludselig kan jeg få en idé, kode et system der faktisk virker, og bygge et projekt fra bunden. Hos Spudo byggede jeg et tool der gør det 4 ansatte før gjorde — på 10 sekunder.</p>
+        <div class="jonas-quote">"Du skal ikke vide alt om AI. Du skal vide en del og begynde at bruge det. Når du først er i gang, kommer idéerne af sig selv."</div>
+        <p>Min undervisning er 100% praktisk. Ingen slides fyldt med buzzwords. Vi arbejder med jeres opgaver, jeres processer, jeres udfordringer — og I går hjem med noget I kan bruge mandag morgen.</p>
+        <a href="#contact" class="btn btn-mint" style="margin-top: 1rem;">Book en snak →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= CONTACT ======= -->
+<section class="block alt-bg" id="contact">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Kom i gang</div>
+      <h2 class="section-title">Book en snak</h2>
+      <p class="section-sub">15 minutter. Ingen forpligtelse. En ærlig samtale om hvad AI kan gøre for jer — og hvad der ikke giver mening.</p>
+    </div>
+
+    <div class="contact-card">
+      <form id="contactForm" class="contact-form">
+        <div class="contact-row">
+          <div>
+            <label for="cf-name">Navn</label>
+            <input type="text" id="cf-name" name="name" required>
+          </div>
+          <div>
+            <label for="cf-email">E-mail</label>
+            <input type="email" id="cf-email" name="email" required>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div>
+            <label for="cf-company">Virksomhed</label>
+            <input type="text" id="cf-company" name="company">
+          </div>
+          <div>
+            <label for="cf-level">Hvilket niveau er I interesserede i?</label>
+            <select id="cf-level" name="level">
+              <option>AI Kickstart (halvdagskursus)</option>
+              <option>AI Deep Dive (heldagskursus)</option>
+              <option>AI Transformation (2 dage)</option>
+              <option>AI Audit Call (1:1, 1.495 kr)</option>
+              <option>Usikker — vil gerne have en anbefaling</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="cf-msg">Kort om jer (valgfrit)</label>
+          <textarea id="cf-msg" name="message" placeholder="Hvad laver I, hvor mange er I, hvad har I prøvet med AI?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-mint" style="justify-self: start;">Send besked →</button>
+      </form>
+      <div class="form-success" id="formSuccess">
+        <div class="form-success-icon">✓</div>
+        <h3>Tak for din besked!</h3>
+        <p style="color: var(--muted); margin-top: 0.5rem;">Jeg vender tilbage inden for 24 timer.</p>
+      </div>
+      <div class="form-note">Jeg vender tilbage inden 24 timer · Ingen spam, aldrig</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FOOTER ======= -->
+<footer>
+  <div class="footer-wrap">
+    <div>© 2026 Digitalbuff · CVR på vej</div>
+    <div>
+      <a href="mailto:jonas@digitalbuff.dk">jonas@digitalbuff.dk</a>
+      <a href="/privatlivspolitik">Privatliv</a>
+      <a href="/vilkar">Vilkår</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ======= AI BADGE ======= -->
+<div id="aiBadge" aria-label="AI build log">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+</div>
+<div id="aiPanel">
+  <div class="panel-header">
+    <div class="panel-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+    <div class="panel-title">digitalbuff.dk — build log</div>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</div>
+
+<script>
+  // ===== Sheets endpoint =====
+  const SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzNqPOkvZELhmHP0tplEvin_yunnExiP3ZWn4th9WbXYIpHzOxKJLLYBf7Ea_P2kv1t/exec';
+
+  // ===== HAMBURGER =====
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // ===== Smooth scroll offset =====
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+
+  // ===== PDF lead form =====
+  document.getElementById('emailForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value.trim();
+    const btn = form.querySelector('button');
+    const orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sender…';
+    try {
+      await fetch(SHEETS_ENDPOINT, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ email, source: 'landing_pdf', utm: window.location.search.slice(1) || '' }),
+      });
+      document.getElementById('leadSuccess').style.display = 'block';
+      form.reset();
+    } catch (err) {
+      alert('Der gik noget galt. Prøv igen.');
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
+    }
+  });
+
+  // ===== Contact form =====
+  document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+      email: form.email.value.trim(),
+      source: 'booking_request',
+      utm: window.location.search.slice(1) || '',
+      message: `Navn: ${form.name.value} | Virksomhed: ${form.company.value} | Niveau: ${form.level.value} | Besked: ${form.message.value}`,
+    };
+    if (!data.email) return;
+    try {
+      await fetch(SHEETS_ENDPOINT, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(data),
+      });
+      form.style.display = 'none';
+      document.getElementById('formSuccess').classList.add('active');
+    } catch (err) {
+      alert('Der gik noget galt. Prøv igen.');
+    }
+  });
+
+  // ===== QUIZ =====
+  const answers = [null, null, null, null];
+
+  function selectOption(step, value, el) {
+    const stepEl = document.querySelector(`.quiz-step[data-step="${step}"]`);
+    stepEl.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[step] = value;
+    document.getElementById(`next-${step}`).classList.add('ready');
+  }
+
+  document.querySelectorAll('.quiz-step').forEach(stepEl => {
+    const step = parseInt(stepEl.dataset.step);
+    if (isNaN(step)) return;
+    stepEl.querySelectorAll('.quiz-option').forEach(opt => {
+      opt.addEventListener('click', () => selectOption(step, parseInt(opt.dataset.value), opt));
+    });
+  });
+
+  function updateProgress(step) {
+    const pct = Math.min(((step + 1) / 4) * 100, 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent =
+      step < 4 ? `Spørgsmål ${step + 1} af 4` : 'Resultat';
+  }
+
+  function goNext(currentStep) {
+    if (answers[currentStep] === null) return;
+    document.querySelector(`.quiz-step[data-step="${currentStep}"]`).classList.remove('active');
+    document.querySelector(`.quiz-step[data-step="${currentStep + 1}"]`).classList.add('active');
+    updateProgress(currentStep + 1);
+  }
+
+  function goBack(currentStep) {
+    document.querySelector(`.quiz-step[data-step="${currentStep}"]`).classList.remove('active');
+    document.querySelector(`.quiz-step[data-step="${currentStep - 1}"]`).classList.add('active');
+    updateProgress(currentStep - 1);
+  }
+
+  function showResult() {
+    if (answers[3] === null) return;
+    const total = answers.reduce((a, b) => a + b, 0);
+
+    let result;
+    if (total <= 3) {
+      result = {
+        icon: '🎯',
+        name: 'AI Kickstart',
+        desc: 'Ud fra jeres svar er I på et godt sted at starte med en solid introduktion til AI. Kickstart giver jer overblik og praktiske færdigheder på én halvdag — og I går hjem med konkrete ting at bruge mandag morgen.',
+        includes: [
+          'AI-overblik tilpasset jeres branche',
+          'Hands-on prompt-teknik fra bunden',
+          'Branchespecifikke øvelser med jeres egne opgaver',
+          'Prompt-cheat sheet og handlingsplan til hver deltager',
+          'Varighed: 4 timer hos jer',
+        ],
+        price: '5.000',
+      };
+    } else if (total <= 7) {
+      result = {
+        icon: '⚡',
+        name: 'AI Deep Dive',
+        desc: 'I har erfaring og er klar til mere end det grundlæggende. Deep Dive tager jer fra sporadisk AI-brug til systematiske workflows der sparer timer i ugen.',
+        includes: [
+          'CRAFT-metoden til prompt engineering',
+          'Workflow-automatisering med Zapier og Make',
+          'AI til indhold, kommunikation og dataanalyse',
+          'Workshop med jeres 3 største tidsspildere',
+          '30-dages implementeringsplan + opfølgning',
+        ],
+        price: '9.500',
+      };
+    } else {
+      result = {
+        icon: '🏆',
+        name: 'AI Transformation',
+        desc: 'I er klar til en reel transformation. To intensive dage der ændrer måden I arbejder på — med egne workflows, automatiseringer, en AI-politik og en 6-måneders plan.',
+        includes: [
+          'Komplet AI-audit af jeres processer',
+          '3–5 custom AI-workflows bygget direkte på kurset',
+          'AI-politik skabelon tilpasset jer',
+          '6-måneders AI-roadmap med milepæle og KPI\'er',
+          '30-min opfølgning med Jonas inden for 2 uger',
+        ],
+        price: '15.000',
+      };
+    }
+
+    document.getElementById('resultBadge').innerHTML = `
+      <div class="result-badge-icon" style="background: var(--accent-ghost); color: var(--accent);">${result.icon}</div>
+      <div>
+        <div class="result-title">Vi anbefaler</div>
+        <div class="result-name">${result.name}</div>
+      </div>`;
+
+    document.getElementById('resultCard').innerHTML = `
+      <p>${result.desc}</p>
+      <ul class="result-includes">${result.includes.map(i => `<li>${i}</li>`).join('')}</ul>`;
+
+    document.getElementById('resultPrice').innerHTML = `
+      <span class="price-from">Pris</span>
+      <span class="price-num">${result.price}</span>
+      <span class="price-suffix">eks. moms</span>`;
+
+    const sel = document.getElementById('cf-level');
+    if (sel) {
+      const levelMap = { 'AI Kickstart': 'AI Kickstart (halvdagskursus)', 'AI Deep Dive': 'AI Deep Dive (heldagskursus)', 'AI Transformation': 'AI Transformation (2 dage)' };
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].text === levelMap[result.name]) { sel.selectedIndex = i; break; }
+      }
+    }
+
+    document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('quizResult').classList.add('active');
+    updateProgress(4);
+  }
+
+  function retakeQuiz() {
+    answers.fill(null);
+    document.getElementById('quizResult').classList.remove('active');
+    document.querySelectorAll('.quiz-step').forEach(s => {
+      s.classList.remove('active');
+      s.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+    });
+    document.querySelectorAll('.quiz-next').forEach(b => b.classList.remove('ready'));
+    document.querySelector('.quiz-step[data-step="0"]').classList.add('active');
+    updateProgress(0);
+  }
+
+  // ===== AI BADGE =====
+  const aiBadge = document.getElementById('aiBadge');
+  const aiPanel = document.getElementById('aiPanel');
+  const panelBody = document.getElementById('panelBody');
+  let panelOpen = false;
+  const lines = [
+    { c: 'tline-cmd', t: '$ digitalbuff init' },
+    { c: 'tline-out', t: '› starter Digitalbuff motor…' },
+    { c: 'tline-ok',  t: '✓ landing page loaded' },
+    { c: 'tline-ok',  t: '✓ AI quiz armeret' },
+    { c: 'tline-ok',  t: '✓ Sheets pipeline forbundet' },
+    { c: 'tline-out', t: '' },
+    { c: 'tline-cmd', t: '$ deploy --human=jonas --agents=5' },
+    { c: 'tline-out', t: 'Victor (CEO) ready.' },
+    { c: 'tline-out', t: 'Mia (Coder) ready.' },
+    { c: 'tline-out', t: 'Sofia, Astrid, Noa ready.' },
+    { c: 'tline-done',t: '✓ this site is run by 1 human + 5 agents' },
+  ];
+  function startTyping() {
+    panelBody.innerHTML = '';
+    let i = 0;
+    function step() {
+      if (i >= lines.length) return;
+      const div = document.createElement('div');
+      div.className = lines[i].c;
+      div.textContent = lines[i].t || ' ';
+      panelBody.appendChild(div);
+      panelBody.scrollTop = panelBody.scrollHeight;
+      i++;
+      setTimeout(step, 220);
+    }
+    step();
+  }
+  aiBadge.addEventListener('click', () => {
+    panelOpen = !panelOpen;
+    aiPanel.classList.toggle('open', panelOpen);
+    if (panelOpen) startTyping();
+  });
+  document.addEventListener('click', e => {
+    if (panelOpen && !aiBadge.contains(e.target) && !aiPanel.contains(e.target)) {
+      panelOpen = false;
+      aiPanel.classList.remove('open');
+    }
+  });
+</script>
+
+</body>
+</html>

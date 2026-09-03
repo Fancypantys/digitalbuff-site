@@ -1,5 +1,6 @@
 /* Bødekassen — Round Table. Bygger på Digitalbuff brand tokens. */
 :root {
+  color-scheme: dark;
   --bg: #0a0a0b;
   --surface: #141416;
   --surface-2: #1b1b1e;
@@ -92,6 +93,17 @@ h2.section-title {
 .grid { display: grid; gap: 14px; }
 .grid-kpi { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
 .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+/* ---------- Demo-banner ---------- */
+.banner {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  background: rgba(0,217,163,.07); border: 1px solid rgba(0,217,163,.28);
+  border-radius: var(--radius); padding: 13px 16px; margin-bottom: 20px;
+}
+.banner p { font-size: 13.5px; color: var(--muted); flex: 1 1 260px; }
+.banner p strong { color: var(--ink); font-weight: 600; }
+.banner-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
+.banner-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* ---------- KPI ---------- */
 .kpi { display: flex; flex-direction: column; gap: 4px; }

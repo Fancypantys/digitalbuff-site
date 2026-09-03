@@ -44,6 +44,8 @@ server, ingen login: `boder/index.html` + `boder/app.css` + `boder/app.js`.
   fordeling på bødetyper, udvikling pr. måned, betalingsdonut og kuriosa (dyreste bøde,
   dyreste måned, hvem der slap uden en eneste).
 - **Sæsonfilter** øverst — alle sæsoner eller ét kalenderår.
+- **Første start** — appen åbner med demo-data (8 opdigtede medlemmer og 70 bøder), så
+  man kan se den i brug med det samme. Et banner øverst tømmer den med ét klik.
 - **Data** — gemmes i browserens `localStorage`. Eksport/import af JSON som sikkerhedskopi,
   CSV-eksport (semikolonsepareret med BOM, så den åbner direkte i dansk Excel) og
   demo-data til at prøve appen af.

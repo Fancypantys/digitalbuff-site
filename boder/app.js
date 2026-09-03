@@ -86,6 +86,7 @@
   function blank() {
     return {
       version: 1,
+      demo: false,
       settings: { clubName: 'Bødekassen', currency: 'kr' },
       members: [],
       types: DEFAULT_TYPES.map(function (t) {
@@ -95,10 +96,40 @@
     };
   }
 
+  function demoDb(settings) {
+    var d = blank();
+    if (settings) d.settings = settings;
+    d.demo = true;
+    var names = ['Anders Holm', 'Mikkel Bay', 'Frederik Lund', 'Jonas Bruun', 'Kasper Riis', 'Rasmus Dahl', 'Thomas Vig', 'Søren Krag'];
+    var roles = ['Præsident', 'Vicepræsident', 'Kasserer', 'Sekretær', '', '', '', ''];
+    names.forEach(function (n, i) {
+      d.members.push({ id: uid(), name: n, role: roles[i], joined: '', active: true });
+    });
+    var now = new Date();
+    for (var i = 0; i < 70; i++) {
+      var m = d.members[Math.floor(Math.random() * d.members.length)];
+      var t = d.types[Math.floor(Math.random() * d.types.length)];
+      var day = new Date(now.getTime() - Math.floor(Math.random() * 300) * 86400000);
+      var paid = Math.random() > 0.38;
+      d.fines.push({
+        id: uid(),
+        memberId: m.id,
+        typeId: t.id,
+        label: t.name,
+        amount: t.amount,
+        date: day.getFullYear() + '-' + pad(day.getMonth() + 1) + '-' + pad(day.getDate()),
+        note: '',
+        paid: paid,
+        paidDate: paid ? todayISO() : ''
+      });
+    }
+    return d;
+  }
+
   function load() {
     var raw;
     try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
-    if (!raw) return blank();
+    if (!raw) return demoDb();
     try {
       var d = JSON.parse(raw);
       return normalize(d);
@@ -112,6 +143,7 @@
     if (!d || typeof d !== 'object') return base;
     return {
       version: 1,
+      demo: !!d.demo,
       settings: {
         clubName: (d.settings && d.settings.clubName) || base.settings.clubName,
         currency: (d.settings && d.settings.currency) || base.settings.currency
@@ -299,6 +331,17 @@
   function emptyBox(title, body, action) {
     return '<div class="card"><div class="empty"><strong>' + esc(title) + '</strong>' + esc(body) +
       (action ? '<div style="margin-top:14px">' + action + '</div>' : '') + '</div></div>';
+  }
+
+  function demoBanner() {
+    if (!db.demo) return '';
+    return '<div class="banner">' +
+      '<span class="banner-dot" aria-hidden="true"></span>' +
+      '<p><strong>Du kigger på demo-data.</strong> Otte opdigtede medlemmer og 70 tilfældige bøder, så appen viser noget fra første klik. Tøm den, når din egen klub skal ind.</p>' +
+      '<span class="banner-actions">' +
+      '<button class="btn btn-sm" data-action="demo-clear" type="button">Tøm og start forfra</button>' +
+      '<button class="btn btn-sm btn-ghost" data-action="demo-keep" type="button">Behold data</button>' +
+      '</span></div>';
   }
 
   /* ---------------- View: Oversigt ---------------- */
@@ -833,7 +876,25 @@
     save();
   }
 
-  function download(filename, content, mime) {
+  /* Kører appen inde i en Claude-artifact, går downloads gennem værtens
+     gemme-dialog; ellers bruges et almindeligt download-link. */
+  var hostDownloads = null;
+  if (window.claude && typeof window.claude.use === 'function') {
+    try {
+      window.claude.use('downloads').then(function (d) { hostDownloads = d; }, function () { hostDownloads = null; });
+    } catch (e) { hostDownloads = null; }
+  }
+
+  function download(filename, content, mime, okMsg) {
+    if (hostDownloads) {
+      hostDownloads.save({ filename: filename, data: content }).then(function () {
+        toast(okMsg);
+      }, function (err) {
+        if (err && err.code === 'declined') { toast('Download afbrudt.'); return; }
+        toast('Filen kunne ikke gemmes — prøv igen.', true);
+      });
+      return;
+    }
     var blob = new Blob([content], { type: mime + ';charset=utf-8' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -843,11 +904,12 @@
     a.click();
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    toast(okMsg);
   }
 
   function exportJSON() {
-    download('boedekasse-' + todayISO() + '.json', JSON.stringify(db, null, 2), 'application/json');
-    toast('Sikkerhedskopi downloadet.');
+    download('boedekasse-' + todayISO() + '.json', JSON.stringify(db, null, 2), 'application/json',
+      'Sikkerhedskopi gemt.');
   }
 
   function csvCell(v) {
@@ -862,8 +924,8 @@
       rows.push([f.date, m ? m.name : 'Slettet medlem', f.label, f.amount, f.paid ? 'Betalt' : 'Ubetalt', f.paidDate, f.note]);
     });
     var csv = '﻿' + rows.map(function (r) { return r.map(csvCell).join(';'); }).join('\r\n');
-    download('boeder-' + (ui.period === 'all' ? 'alle' : ui.period) + '.csv', csv, 'text/csv');
-    toast('CSV downloadet — åbner direkte i Excel og Numbers.');
+    download('boeder-' + (ui.period === 'all' ? 'alle' : ui.period) + '.csv', csv, 'text/csv',
+      'CSV gemt — åbner direkte i Excel og Numbers.');
   }
 
   function importJSON(file) {
@@ -892,32 +954,7 @@
 
   function loadDemo() {
     if (!confirm('Indlæs demo-data? Det erstatter de medlemmer og bøder, der ligger i appen nu.')) return;
-    var names = ['Anders Holm', 'Mikkel Bay', 'Frederik Lund', 'Jonas Bruun', 'Kasper Riis', 'Rasmus Dahl', 'Thomas Vig', 'Søren Krag'];
-    var roles = ['Præsident', 'Vicepræsident', 'Kasserer', 'Sekretær', '', '', '', ''];
-    var keepSettings = db.settings;
-    db = blank();
-    db.settings = keepSettings;
-    names.forEach(function (n, i) {
-      db.members.push({ id: uid(), name: n, role: roles[i], joined: '', active: true });
-    });
-    var now = new Date();
-    for (var i = 0; i < 70; i++) {
-      var m = db.members[Math.floor(Math.random() * db.members.length)];
-      var t = db.types[Math.floor(Math.random() * db.types.length)];
-      var d = new Date(now.getTime() - Math.floor(Math.random() * 300) * 86400000);
-      db.fines.push({
-        id: uid(),
-        memberId: m.id,
-        typeId: t.id,
-        label: t.name,
-        amount: t.amount,
-        date: d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()),
-        note: '',
-        paid: Math.random() > 0.38,
-        paidDate: todayISO()
-      });
-    }
-    db.fines.forEach(function (f) { if (!f.paid) f.paidDate = ''; });
+    db = demoDb(db.settings);
     toast('Demo-data indlæst.');
     save();
   }
@@ -1030,6 +1067,20 @@
       db.types = db.types.filter(function (x) { return x.id !== t.id; });
       if (ui.draft.typeId === t.id) ui.draft.typeId = '';
       toast('Bødetype slettet.');
+      save();
+    },
+
+    'demo-clear': function () {
+      if (!confirm('Tøm appen helt? Demo-medlemmer og demo-bøder slettes, og du starter med et blankt takstblad plus klubbens standardtakster.')) return;
+      db = blank();
+      ui.view = 'members';
+      toast('Appen er tom — start med at tilføje klubbens medlemmer.');
+      save();
+    },
+
+    'demo-keep': function () {
+      db.demo = false;
+      toast('Demo-data beholdt — du kan altid tømme appen under Indstillinger.');
       save();
     },
 
@@ -1209,7 +1260,7 @@
 
   function render() {
     document.getElementById('clubName').textContent = db.settings.clubName;
-    document.title = db.settings.clubName + ' — Round Table';
+    document.title = db.settings.clubName;
 
     var tabs = document.querySelectorAll('#tabs .tab');
     for (var i = 0; i < tabs.length; i++) {
@@ -1218,7 +1269,7 @@
     renderPeriod();
 
     var fn = VIEWS[ui.view] || viewDashboard;
-    document.getElementById('view').innerHTML = fn();
+    document.getElementById('view').innerHTML = demoBanner() + fn();
 
     if (ui.refocus) {
       var el = document.querySelector('[data-filter="' + ui.refocus + '"]');

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bødekassen — Round Table</title>
+<meta name="description" content="Bødekasse til Round Table-klubben. Opret bøder, hold styr på medlemmer og se statistik.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-bracket">{</span><span class="brand-word" id="clubName">Bødekassen</span><span class="brand-bracket">}</span>
+    </div>
+    <div class="topbar-right">
+      <label class="period" for="periodSelect">
+        <span class="period-label">Sæson</span>
+        <select id="periodSelect" aria-label="Vælg periode"></select>
+      </label>
+      <button class="btn btn-accent btn-sm" id="quickAddBtn" type="button">+ Ny bøde</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Sektioner">
+    <button class="tab" data-view="dashboard" type="button">Oversigt</button>
+    <button class="tab" data-view="new" type="button">Ny bøde</button>
+    <button class="tab" data-view="fines" type="button">Bøder</button>
+    <button class="tab" data-view="members" type="button">Medlemmer</button>
+    <button class="tab" data-view="types" type="button">Bødetyper</button>
+    <button class="tab" data-view="stats" type="button">Statistik</button>
+    <button class="tab" data-view="settings" type="button">Indstillinger</button>
+  </nav>
+</header>
+
+<main id="view" class="view" tabindex="-1"></main>
+
+<footer class="foot">
+  <span>Data gemmes lokalt i din browser. Husk at tage en sikkerhedskopi under <em>Indstillinger</em>.</span>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle" class="modal-title"></h2>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
